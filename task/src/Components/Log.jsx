@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Axios from "axios";
 
@@ -7,7 +7,9 @@ const Log = () => {
   const [type, setType] = React.useState("entry");
   const [entryData, setEntryData] = React.useState([]);
   const [exitData, setExitData] = React.useState([]);
+  const [loading,setLoading] = useState(false);
   const fetch = async () => {
+    setLoading(true);
     await Axios.get("http://localhost:5000/user/fetchLogs", {
       headers: {
         "x-auth-token": Cookies.get("jwt"),
@@ -22,6 +24,7 @@ const Log = () => {
       });
       console.log(entryData, exitData);
     });
+    setLoading(false);
   };
   useEffect(() => {
     fetch();
@@ -117,8 +120,8 @@ const Log = () => {
             </div>
           </div>
         </div>
-        {entryData!==[] ?(
         <div style={styles.logs}>
+        {!loading ?(
 <>
           {type === "entry" ? (
             <div>
@@ -149,8 +152,8 @@ const Log = () => {
               })}
             </div>
           )}</>
+        ):<div></div>}
         </div>
-        ):null}
       </div>
     </>
   );
